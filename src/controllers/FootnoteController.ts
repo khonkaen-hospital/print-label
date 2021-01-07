@@ -52,7 +52,7 @@ function createPdf(data: any, amount: number = 1, createItem: CreateItem) {
 		unit: "mm",
 		format: [88.9, 25.4]
 	});
-	if (data.hn) {
+	if (data !== null) {
 		for (let index = 0; index < amount; index++) {
 			createItem(pdf.doc, data, index === 0 ? false : true)
 		}
