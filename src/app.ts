@@ -1,6 +1,5 @@
-
-import express from "express";
-import knex from "knex";
+import express, { Request, Response, NextFunction } from 'express';
+import Knex from "knex";
 import helmet from 'helmet';
 import cors from 'cors';
 import dotenv from 'dotenv';
@@ -12,7 +11,7 @@ const app = express();
 const port = process.env.PORT;
 const routes = new Routes();
 app.use((req: Request, res: Response, next: NextFunction) => {
-	req.db = require('knex')({
+	req.db = Knex({
 		client: 'mysql',
 		connection: {
 			host: process.env.DB_HOST,

@@ -11,7 +11,7 @@ export default class Routes {
 			res.send({ success: true, message: 'Print API' });
 		});
 
-		app.use((req: Request, res: Response, next: NextFunction) {
+		app.use((req: Request, res: Response, next: NextFunction) => {
 			try {
 				if (res.filename) {
 					fs.unlinkSync(res.filename);

@@ -1,17 +1,17 @@
-import knex from 'knex';
+import Knex from 'knex';
 
 export default class HisModel {
 
 	public tableName = 'view_ipd_ipd';
 
-	getIpdByAn(knex: knex, an: string) {
+	getIpdByAn(knex: Knex, an: string) {
 		return knex('view_ipd_ipd')
 			.select('hn', 'an', 'vn', 'title', 'name', 'surname', 'ward_name', 'age', 'age_type')
 			.where({ an: an }).first();
 	}
 
-	async getIpdLabel(knex: knex, an: string) {
-		let response = await this.getIpdByAn(knex, an);
+	async getIpdLabel(db: Knex, an: string) {
+		let response = await this.getIpdByAn(db, an);
 		if (response) {
 			let ageName = this.getAgeType(response.age_type);
 			return {
@@ -24,19 +24,17 @@ export default class HisModel {
 		} else {
 			return null;
 		}
-
 	}
 
-	getOpdByVn(knex: knex, vn: string) {
+	getOpdByVn(knex: Knex, vn: string) {
 		return knex('view_opd_visit')
 			.select('hn', 'vn', 'title', 'name', 'surname', 'dep_name', 'age', 'age_type')
 			.where({ vn: vn }).first();
 	}
 
-	async getOpdLabel(knex: knex, vn: string) {
-		let response = await this.getOpdByVn(knex, vn);
+	async getOpdLabel(db: Knex, vn: string) {
+		let response = await this.getOpdByVn(db, vn);
 		if (response) {
-			let ageName = this.getAgeType(response.age_type);
 			return {
 				fullname: response.title + response.name + ' ' + response.surname,
 				hn: response.hn + ''
@@ -44,7 +42,6 @@ export default class HisModel {
 		} else {
 			return null;
 		}
-
 	}
 
 	getAgeType(age_type: number): string {

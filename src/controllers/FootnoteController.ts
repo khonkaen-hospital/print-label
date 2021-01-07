@@ -5,9 +5,7 @@ import fs from 'fs';
 import PDF from '../pdf';
 import HisModel from '../models/his';
 
-export interface CreateItem {
-	(doc: jsPDF, data: any, addPage: boolean): any
-}
+export type CreateItem = (doc: jsPDF, data: any, addPage: boolean) => any;
 
 const model = new HisModel();
 
@@ -15,9 +13,10 @@ export class FootnoteController {
 	public static async ipd(req: Request, res: Response, next: NextFunction) {
 
 		const copies = +req.params.copies || 1;
+		const db = req.db;
 
 		try {
-			let data = await model.getIpdLabel(req.db, req.params.an);
+			let data = await model.getIpdLabel(db, req.params.an);
 			let [content, tempName] = createPdf(data, copies, createItemTemplateIpd);
 			res.filename = tempName;
 			res.set({ 'content-type': 'application/pdf; charset=utf-8' });
