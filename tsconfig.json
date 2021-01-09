@@ -9,14 +9,15 @@
 		"noImplicitAny": true,
 		"removeComments": true,
 		"preserveConstEnums": true,
-		"skipLibCheck": true,
-		"forceConsistentCasingInFileNames": true
+		"skipLibCheck": true
 	},
 	"include": [
-		"src/**/*",
-		"assets/*"
+		"src/**/*"
 	],
 	"files": [
 		"index.d.ts"
-	]
+	],
+	"exclude": [
+		"node_modules"
+	],
 }

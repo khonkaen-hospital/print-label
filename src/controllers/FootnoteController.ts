@@ -14,9 +14,11 @@ export class FootnoteController {
 
 		const copies = +req.params.copies || 1;
 		const db = req.db;
-
+		let data = null;
 		try {
-			let data = await model.getIpdLabel(db, req.params.an);
+			if (db !== undefined) {
+				data = await model.getIpdLabel(db, req.params.an);
+			}
 			let [content, tempName] = createPdf(data, copies, createItemTemplateIpd);
 			res.filename = tempName;
 			res.set({ 'content-type': 'application/pdf; charset=utf-8' });
@@ -29,9 +31,12 @@ export class FootnoteController {
 
 	public static async opd(req: Request, res: Response, next: NextFunction) {
 		const copies = +req.params.copies || 1;
-
+		let data = null;
+		const db = req.db;
 		try {
-			let data = await model.getOpdLabel(req.db, req.params.vn);
+			if (db !== undefined) {
+				data = await model.getOpdLabel(db, req.params.vn);
+			}
 			let [content, tempName] = createPdf(data, copies, createItemTemplateOpd);
 			res.filename = tempName;
 			res.set({ 'content-type': 'application/pdf; charset=utf-8' });

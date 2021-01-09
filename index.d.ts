@@ -1,12 +1,12 @@
-import knex from 'knex';
+import Knex from 'knex';
 import express from "express";
 declare global {
 	namespace Express {
 		export interface Request {
-			db?: knex;
+			db?: Knex;
 		}
 		export interface Response {
-			filename?: string;
+			filename?: string | Buffer;
 		}
 	}
 }
