@@ -38,7 +38,6 @@ function createPdf(data: Array<any>, createItem: CreateItem) {
 		unit: "mm",
 		format: [76.2, 50.8]
 	});
-	console.log(data);
 	if (data.length > 0) {
 		data.forEach((value, index) => {
 			createItem(pdf.doc, value, (index === (data.length - 1) ? false : true))
@@ -72,7 +71,7 @@ function createItemTemplateIpd(doc: jsPDF, data: any, addPage: boolean) {
 
 	doc.setFont("SarabunNew", 'normal');
 	doc.text("ขวดที่:", 38, 22);
-	doc.text(data.bottle_no || '1', 50, 22);
+	doc.text(data.bottle_no || '-', 50, 22);
 
 	doc.setFont("SarabunNewBold", 'bold');
 	const pageWidth = doc.internal.pageSize.getWidth();
