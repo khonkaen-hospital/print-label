@@ -11,12 +11,17 @@
 	"author": "Sathit Seethaphon<dixonsatit@gmail.com>",
 	"license": "ISC",
 	"dependencies": {
+		"@types/jsbarcode": "^3.11.0",
+		"canvas": "^2.8.0",
 		"cors": "^2.8.5",
 		"dotenv": "^8.2.0",
+		"ejs": "^3.1.5",
 		"express": "^4.17.1",
 		"helmet": "^4.3.1",
+		"jsbarcode": "^3.11.4",
 		"jspdf": "^2.2.0",
 		"knex": "^0.21.15",
+		"moment": "^2.29.1",
 		"mysql": "^2.18.1",
 		"nanoid": "^3.1.20",
 		"pdfjs": "^2.4.2"

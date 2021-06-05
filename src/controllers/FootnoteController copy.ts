@@ -15,36 +15,32 @@ export class FootnoteController {
 		const copies = +req.params.copies || 1;
 		const db = req.db;
 		let data = null;
-		try {
-			if (db !== undefined) {
-				data = await model.getIpdLabel(db, req.params.an);
-			}
-			let [content, tempName] = createPdf(data, copies, createItemTemplateIpd);
-			res.filename = tempName;
-			res.set({ 'content-type': 'application/pdf; charset=utf-8' });
-			res.send(content);
-			next();
-		} catch (e) {
-			throw e;
+
+		if (db !== undefined) {
+			data = await model.getIpdLabel(db, req.params.an);
 		}
+		const [content, tempName] = createPdf(data, copies, createItemTemplateIpd);
+		res.filename = tempName;
+		res.set({ 'content-type': 'application/pdf; charset=utf-8' });
+		res.send(content);
+		next();
+
 	}
 
 	public static async opd(req: Request, res: Response, next: NextFunction) {
 		const copies = +req.params.copies || 1;
 		let data = null;
 		const db = req.db;
-		try {
-			if (db !== undefined) {
-				data = await model.getOpdLabel(db, req.params.vn);
-			}
-			let [content, tempName] = createPdf(data, copies, createItemTemplateOpd);
-			res.filename = tempName;
-			res.set({ 'content-type': 'application/pdf; charset=utf-8' });
-			res.send(content);
-			next();
-		} catch (e) {
-			throw e;
+
+		if (db !== undefined) {
+			data = await model.getOpdLabel(db, req.params.vn);
 		}
+		const [content, tempName] = createPdf(data, copies, createItemTemplateOpd);
+		res.filename = tempName;
+		res.set({ 'content-type': 'application/pdf; charset=utf-8' });
+		res.send(content);
+		next();
+
 	}
 }
 

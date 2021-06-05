@@ -4,10 +4,31 @@ export default class HisModel {
 
 	public tableName = 'view_ipd_ipd';
 
+	getVaccineBySn(knex: Knex, sn: Array<any>) {
+		return knex('immunization_center.vaccine_dose')
+			.whereIn('vaccine_serial_no', sn);
+	}
+
 	getIpdByAn(knex: Knex, an: string) {
 		return knex('view_ipd_ipd')
 			.select('hn', 'an', 'vn', 'title', 'name', 'surname', 'ward_name', 'age', 'age_type')
 			.where({ an: an }).first();
+	}
+
+	async getVaccines(db: Knex, sn: string) {
+		let response = await this.getIpdByAn(db, sn);
+		if (response) {
+			let ageName = this.getAgeType(response.age_type);
+			return {
+				fullname: response.title + response.name + ' ' + response.surname,
+				age: response.age + ' ' + ageName,
+				ward: response.ward_name,
+				hn: response.hn + '',
+				an: response.an + ''
+			};
+		} else {
+			return null;
+		}
 	}
 
 	async getIpdLabel(db: Knex, an: string) {

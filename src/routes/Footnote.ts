@@ -1,5 +1,5 @@
 import * as express from 'express';
-import { FootnoteController } from '../controllers/FootnoteController';
+import { FootnoteController } from '../controllers/JobController';
 const router = express.Router();
 
 router.get('/ipd/:an/:copies', FootnoteController.ipd);
