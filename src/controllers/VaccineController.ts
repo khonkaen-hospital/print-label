@@ -41,7 +41,7 @@ function createPdf(data: Array<any>, createItem: CreateItem) {
 	console.log(data);
 	if (data.length > 0) {
 		data.forEach((value, index) => {
-			createItem(pdf.doc, value, index === 0 ? false : true)
+			createItem(pdf.doc, value, (index === (data.length - 1) ? false : true))
 		});
 	}
 	pdf.doc.save(tempName);
@@ -52,9 +52,10 @@ function createPdf(data: Array<any>, createItem: CreateItem) {
 function createItemTemplateIpd(doc: jsPDF, data: any, addPage: boolean) {
 	const canvas = createCanvas(100, 100);
 	JsBarcode(canvas, data.dose_id, {
-		height: 25,
+		height: 20,
+		displayValue: false
 	});
-	doc.addImage(canvas.toDataURL(), 'PNG', 2, 23, 72, 28);
+	doc.addImage(canvas.toDataURL(), 'PNG', 2, 20, 72, 28);
 
 	doc.setFont("SarabunNew", 'normal');
 	doc.setFontSize(18);
@@ -73,7 +74,13 @@ function createItemTemplateIpd(doc: jsPDF, data: any, addPage: boolean) {
 	doc.text("ขวดที่:", 38, 22);
 	doc.text(data.bottle_no || '1', 50, 22);
 
-	doc.addPage();
+	doc.setFont("SarabunNewBold", 'bold');
+	const pageWidth = doc.internal.pageSize.getWidth();
+	doc.text(data.dose_id.toString(), pageWidth / 2, 46, { align: 'center' });
+	if (addPage === true) {
+		doc.addPage();
+	}
+
 }
 
 
