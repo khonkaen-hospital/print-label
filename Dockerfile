@@ -1,7 +1,7 @@
 FROM node:12.19.0-alpine3.9
 
 RUN apk --no-cache add --virtual native-deps \
-	g++ gcc libgcc libstdc++ linux-headers autoconf automake make nasm python git imagemagick ghostscript && \
+	g++ gcc cairo-dev jpeg-dev pango-dev giflib-dev libgcc libstdc++ linux-headers autoconf automake make nasm python git imagemagick ghostscript && \
 	npm install --quiet node-gyp -g
 
 WORKDIR /app

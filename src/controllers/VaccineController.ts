@@ -52,18 +52,14 @@ function createPdf(data: Array<any>, createItem: CreateItem) {
 function createItemTemplateIpd(doc: jsPDF, data: any, addPage: boolean) {
 	const canvas = createCanvas(100, 100);
 	JsBarcode(canvas, data.dose_id, {
-		height: 45,
+		height: 25,
 	});
-	doc.addImage(canvas.toDataURL(), 'JPEG', 3, 30, 70, 20);
-
-	//if (addPage === true) {
-
-	//}
+	doc.addImage(canvas.toDataURL(), 'PNG', 2, 23, 72, 28);
 
 	doc.setFont("SarabunNew", 'normal');
 	doc.setFontSize(18);
 	doc.text("LN:", 5, 6);
-	doc.text(data.lot_number, 16, 6);
+	doc.text(data.lot_number.toUpperCase(), 16, 6);
 
 	doc.setFont("SarabunNew", 'normal');
 	doc.text("SN:", 5, 14);
@@ -72,6 +68,11 @@ function createItemTemplateIpd(doc: jsPDF, data: any, addPage: boolean) {
 	doc.setFont("SarabunNew", 'normal');
 	doc.text("Exp:", 5, 22);
 	doc.text(moment(data.expiration_date).format('YYYY-MM'), 18, 22);
+
+	doc.setFont("SarabunNew", 'normal');
+	doc.text("ขวดที่:", 38, 22);
+	doc.text(data.bottle_no || '1', 50, 22);
+
 	doc.addPage();
 }
 
