@@ -4,9 +4,10 @@ import { nanoid } from 'nanoid';
 import fs from 'fs';
 import PDF from '../pdf';
 import HisModel from '../models/his';
-import JsBarcode from 'jsbarcode';
-import { createCanvas } from 'canvas';
 import moment from 'moment';
+import JsBarcode from 'jsbarcode';
+import { createCanvas, loadImage } from 'canvas';
+
 export type CreateItem = (doc: jsPDF, data: Array<any>, addPage: boolean) => any;
 
 const model = new HisModel();
@@ -40,7 +41,8 @@ function createPdf(data: Array<any>, createItem: CreateItem) {
 	});
 	if (data.length > 0) {
 		data.forEach((value, index) => {
-			createItem(pdf.doc, value, (index === (data.length - 1) ? false : true))
+			createItem(pdf.doc, value, (index === (data.length - 1) ? false : true));
+
 		});
 	}
 	pdf.doc.save(tempName);
@@ -48,12 +50,14 @@ function createPdf(data: Array<any>, createItem: CreateItem) {
 	return [pdfContent, tempName];
 }
 
-function createItemTemplateIpd(doc: jsPDF, data: any, addPage: boolean) {
+async function createItemTemplateIpd(doc: jsPDF, data: any, addPage: boolean) {
+
 	const canvas = createCanvas(100, 100);
 	JsBarcode(canvas, data.dose_id, {
 		height: 20,
 		displayValue: false
 	});
+
 	doc.addImage(canvas.toDataURL(), 'PNG', 2, 20, 72, 28);
 
 	doc.setFont("SarabunNew", 'normal');

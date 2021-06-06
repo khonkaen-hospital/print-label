@@ -1,14 +1,16 @@
-FROM node:12.19.0-alpine3.9
+FROM node:14
 
-RUN apk --no-cache add --virtual native-deps \
-	g++ gcc cairo-dev jpeg-dev pango-dev giflib-dev libgcc libstdc++ linux-headers autoconf automake make nasm python git imagemagick ghostscript && \
-	npm install --quiet node-gyp -g
+RUN apt-get update \
+	&& apt-get install -y \
+	build-essential libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev \
+	make
 
 WORKDIR /app
 
 COPY ./package.json ./
 
-RUN yarn install
+RUN npm install canvas --build-from-source
+RUN npm install --prod
 
 COPY ./ ./
 
