@@ -71,12 +71,14 @@ function createPdf(data: Array<any>, copy: number, createItem: CreateItem) {
 function createItemTemplate(doc: jsPDF, data: any, addPage: boolean) {
 
 	const canvas = createCanvas(100, 100);
-	JsBarcode(canvas, data.dose_id, {
-		height: 20,
+	const pageWidth = doc.internal.pageSize.getWidth();
+	const doseNo = +data.max_tolerated_dose > 1 ? data.dose_no.toString() : '1';
+	JsBarcode(canvas, data.dose_id + '-' + doseNo, {
+		height: 10,
 		displayValue: false
 	});
 
-	doc.addImage(canvas.toDataURL(), 'PNG', 2, 20, 72, 28);
+	doc.addImage(canvas.toDataURL(), 'PNG', 2, 24, 72, 28);
 
 	doc.setFont("SarabunNew", 'normal');
 	doc.setFontSize(18);
@@ -97,19 +99,24 @@ function createItemTemplate(doc: jsPDF, data: any, addPage: boolean) {
 	doc.setFont("SarabunNew", 'normal');
 	doc.text("ขวดที่:", 33, 22);
 	doc.setFont("SarabunNewBold", 'bold');
-	doc.text(data.bottle_no || '-', 45, 22);
+	doc.text(data.bottle_no || '1', 45, 22);
 
 	doc.setFont("SarabunNew", 'normal');
 	doc.text("โดสที่:", 53, 22);
 	doc.setFont("SarabunNewBold", 'bold');
 	doc.text(+data.max_tolerated_dose > 1 ? data.dose_no.toString() : '1', 64, 22);
 
+	doc.setFontSize(20);
 	doc.setFont("SarabunNewBold", 'bold');
-	const pageWidth = doc.internal.pageSize.getWidth();
-	doc.text(data.dose_id.toString(), pageWidth / 2, 46, { align: 'center' });
+	doc.text(data.vaccine_manufacturer_name, pageWidth / 2, 31, { align: 'center' });
+
+	doc.setFontSize(18);
+	doc.setFont("SarabunNewBold", 'bold');
+	doc.text(data.dose_id.toString() + '-' + doseNo, pageWidth / 2, 48, { align: 'center' });
+
+
 	if (addPage === true) {
 		doc.addPage();
 	}
 }
-
 

@@ -6,6 +6,7 @@ export default class HisModel {
 
 	getVaccineBySn(knex: Knex, sn: Array<any>) {
 		return knex('immunization_center.vaccine_dose')
+			.leftJoin('immunization_center.vaccine_manufacturer', 'immunization_center.vaccine_manufacturer.vaccine_manufacturer_id', 'immunization_center.vaccine_dose.vaccine_manufacturer_id')
 			.whereIn('vaccine_serial_no', sn);
 	}
 
