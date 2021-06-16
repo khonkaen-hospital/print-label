@@ -76,31 +76,24 @@ function createItemTemplateIpd(doc: jsPDF, data: any, addPage: boolean) {
 		height: 5,
 		displayValue: false
 	});
-	doc.addImage(canvas.toDataURL(), 'PNG', 6, 8, 72, 28);
+	doc.addImage(canvas.toDataURL(), 'PNG', 8, 6, 65, 28);
 
 	doc.setFont("SarabunNew", 'normal');
-	doc.setFontSize(22);
-	doc.text("HN:", 3, 5);
-	doc.setFont("SarabunNewBold", 'bold');
-	doc.text(data.hn, 12, 5);
-	doc.setFont("SarabunNew", 'normal');
-	doc.text("AN:", 40, 5);
-	doc.setFont("SarabunNewBold", 'bold');
-	doc.text(data.an, 48, 5);
+	doc.setFontSize(16);
+	doc.text("HN:", 11, 7);
+	doc.text(data.hn, 18, 7);
+	doc.text("AN:", 40, 7);
+	doc.text(data.an, 46, 7);
 
 	doc.setFont("SarabunNew", 'normal');
-	doc.text("ชื่อ:", 3, 12);
-	doc.setFont("SarabunNewBold", 'bold');
-	doc.text(data.fullname, 12, 12);
-	doc.setFontSize(18);
-	doc.setFont("SarabunNew", 'normal');
-	doc.text("อายุ:", 3, 18);
-	doc.setFont("SarabunNewBold", 'bold');
-	doc.text(data.age, 13, 18);
-	doc.setFont("SarabunNew", 'normal');
-	doc.text("Ward:", 23, 18);
-	doc.setFont("SarabunNewBold", 'bold');
-	doc.text(data.ward, 35, 18);
+	doc.text("ชื่อ:", 11, 12);
+	doc.text(data.fullname, 18, 12);
+
+	doc.setFontSize(14);
+	doc.text("อายุ:", 11, 16);
+	doc.text(data.age, 19, 16);
+	doc.text(",", 27, 16);
+	doc.text(data.ward, 28, 16);
 }
 
 function createItemTemplateOpd(doc: jsPDF, data: any, addPage: boolean) {
