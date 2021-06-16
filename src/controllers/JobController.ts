@@ -1,6 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import { jsPDF } from "jspdf";
 import { nanoid } from 'nanoid';
+import JsBarcode from 'jsbarcode';
+import { createCanvas, loadImage } from 'canvas';
 import fs from 'fs';
 import PDF from '../pdf';
 import HisModel from '../models/his';
@@ -10,6 +12,8 @@ export type CreateItem = (doc: jsPDF, data: any, addPage: boolean) => any;
 const model = new HisModel();
 
 export class FootnoteController {
+
+
 	public static async ipd(req: Request, res: Response, next: NextFunction) {
 
 		const copies = +req.params.copies || 1;
@@ -66,30 +70,37 @@ function createItemTemplateIpd(doc: jsPDF, data: any, addPage: boolean) {
 	if (addPage === true) {
 		doc.addPage();
 	}
+	const pageWidth = doc.internal.pageSize.getWidth();
+	const canvas = createCanvas(100, 100);
+	JsBarcode(canvas, data.an, {
+		height: 5,
+		displayValue: false
+	});
+	doc.addImage(canvas.toDataURL(), 'PNG', 6, 8, 72, 28);
 
 	doc.setFont("SarabunNew", 'normal');
 	doc.setFontSize(22);
-	doc.text("HN:", 7, 6);
+	doc.text("HN:", 3, 5);
 	doc.setFont("SarabunNewBold", 'bold');
-	doc.text(data.hn, 16, 6);
+	doc.text(data.hn, 12, 5);
 	doc.setFont("SarabunNew", 'normal');
-	doc.text("AN:", 42, 6);
+	doc.text("AN:", 40, 5);
 	doc.setFont("SarabunNewBold", 'bold');
-	doc.text(data.an, 52, 6);
+	doc.text(data.an, 48, 5);
 
 	doc.setFont("SarabunNew", 'normal');
-	doc.text("ชื่อ-สกุล:", 7, 14);
+	doc.text("ชื่อ:", 3, 12);
 	doc.setFont("SarabunNewBold", 'bold');
-	doc.text(data.fullname, 26, 14);
-
+	doc.text(data.fullname, 12, 12);
+	doc.setFontSize(18);
 	doc.setFont("SarabunNew", 'normal');
-	doc.text("อายุ:", 7, 22);
+	doc.text("อายุ:", 3, 18);
 	doc.setFont("SarabunNewBold", 'bold');
-	doc.text(data.age, 18, 22);
+	doc.text(data.age, 13, 18);
 	doc.setFont("SarabunNew", 'normal');
-	doc.text("Ward:", 30, 22);
+	doc.text("Ward:", 23, 18);
 	doc.setFont("SarabunNewBold", 'bold');
-	doc.text(data.ward, 44, 22);
+	doc.text(data.ward, 35, 18);
 }
 
 function createItemTemplateOpd(doc: jsPDF, data: any, addPage: boolean) {
