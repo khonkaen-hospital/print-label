@@ -73,10 +73,11 @@ function createItemTemplateIpd(doc: jsPDF, data: any, addPage: boolean) {
 	const pageWidth = doc.internal.pageSize.getWidth();
 	const canvas = createCanvas(100, 100);
 	JsBarcode(canvas, data.an, {
+		format: "CODE128",
 		height: 5,
 		displayValue: false
 	});
-	doc.addImage(canvas.toDataURL(), 'PNG', 8, 6, 65, 28);
+	doc.addImage(canvas.toDataURL(), 'PNG', 13, 6, 50, 28);
 
 	doc.setFont("SarabunNew", 'normal');
 	doc.setFontSize(16);
