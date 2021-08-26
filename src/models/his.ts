@@ -10,6 +10,12 @@ export default class HisModel {
 			.whereIn('vaccine_serial_no', sn);
 	}
 
+	getVaccineByDoseId(knex: Knex, deseStart: number, doseEnd: number) {
+		return knex('immunization_center.vaccine_dose')
+			.leftJoin('immunization_center.vaccine_manufacturer', 'immunization_center.vaccine_manufacturer.vaccine_manufacturer_id', 'immunization_center.vaccine_dose.vaccine_manufacturer_id')
+			.whereBetween('dose_id', [deseStart, doseEnd]);
+	}
+
 	getIpdByAn(knex: Knex, an: string) {
 		return knex('view_ipd_ipd')
 			.select('hn', 'an', 'vn', 'title', 'name', 'surname', 'ward_name', 'age', 'age_type')

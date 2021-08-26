@@ -14,16 +14,31 @@ const model = new HisModel();
 
 export class VaccineController {
 
-	public static async ipd(req: Request, res: Response, next: NextFunction) {
+	public static async print(req: Request, res: Response, next: NextFunction) {
 		const db = req.db;
+		const type = req.query.type || 'sn';
 		let data: Array<any> = [];
+		let start: number = 0;
+		let end: number = 0;
 		let sn = [];
-		sn = req.params.sn.split(',');
 		const copy = req.query.copy ? +req.query.copy : 1;
 
-		if (db !== undefined) {
-			data = await model.getVaccineBySn(db, sn);
+		if (type === 'doseid') {
+			sn = req.params.sn.split(',');
+			start = +sn[0];
+			end = +sn[1];
+		} else {
+			sn = req.params.sn.split(',');
 		}
+
+		if (db !== undefined) {
+			if (type === 'doseid') {
+				data = await model.getVaccineByDoseId(db, start, end)
+			} else {
+				data = await model.getVaccineBySn(db, sn);
+			}
+		}
+
 		const [content, tempName] = createPdf(data, copy, createItemTemplate);
 
 		res.filename = tempName;
