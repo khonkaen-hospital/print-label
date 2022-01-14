@@ -139,6 +139,7 @@ function createItemTemplate(doc: jsPDF, data: any, addPage: boolean, showExpire 
 		doc.text("โดสที่:", 30, 22);
 		doc.setFont("SarabunNewBold", 'bold');
 		doc.text(+data.max_tolerated_dose > 1 ? data.dose_no.toString() : '1', 45, 22);
+
 	}
 
 	doc.setFontSize(20);

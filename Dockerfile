@@ -20,7 +20,7 @@ RUN npm run build
 
 FROM base as release
 
-COPY --from=dependencies /app/node_modules ./app/node_modules
+COPY --from=dependences /app/node_modules ./app/node_modules
 
 COPY ./ ./
 
