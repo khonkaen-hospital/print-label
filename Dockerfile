@@ -1,4 +1,4 @@
-FROM node:14
+FROM node:14.17 as base
 
 RUN apt-get update \
 	&& apt-get install -y \
@@ -9,12 +9,20 @@ WORKDIR /app
 
 COPY ./package.json ./
 
+FROM base as dependences
+
 RUN npm install canvas --build-from-source
 RUN npm install --prod
 
 COPY ./ ./
 
 RUN npm run build
+
+FROM base as release
+
+COPY --from=dependencies /app/node_modules ./app/node_modules
+
+COPY ./ ./
 
 EXPOSE 3000
 

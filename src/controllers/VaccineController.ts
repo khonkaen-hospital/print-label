@@ -8,7 +8,7 @@ import moment from 'moment';
 import JsBarcode from 'jsbarcode';
 import { createCanvas, loadImage } from 'canvas';
 
-export type CreateItem = (doc: jsPDF, data: Array<any>, addPage: boolean) => any;
+export type CreateItem = (doc: jsPDF, data: Array<any>, addPage: boolean, showExpire: boolean) => any;
 
 const model = new HisModel();
 
@@ -17,9 +17,10 @@ export class VaccineController {
 	public static async print(req: Request, res: Response, next: NextFunction) {
 		const db = req.db;
 		const type = req.query.type || 'sn';
+		const showExpire = req.query.showExpire;
 		let data: Array<any> = [];
-		let start: number = 0;
-		let end: number = 0;
+		let start = 0;
+		let end = 0;
 		let sn = [];
 		const copy = req.query.copy ? +req.query.copy : 1;
 
@@ -39,7 +40,7 @@ export class VaccineController {
 			}
 		}
 
-		const [content, tempName] = createPdf(data, copy, createItemTemplate);
+		const [content, tempName] = createPdf(data, copy, createItemTemplate, showExpire == '1' ? true : false);
 
 		res.filename = tempName;
 		res.set({ 'content-type': 'application/pdf; charset=utf-8' });
@@ -49,7 +50,7 @@ export class VaccineController {
 }
 
 
-function createPdf(data: Array<any>, copy: number, createItem: CreateItem) {
+function createPdf(data: Array<any>, copy: number, createItem: CreateItem, showExpire = true) {
 	const tempName: string = './temp/' + nanoid() + '.pdf';
 	const pdf = new PDF({
 		orientation: "landscape",
@@ -59,11 +60,11 @@ function createPdf(data: Array<any>, copy: number, createItem: CreateItem) {
 	if (data.length > 0) {
 		const printItems: Array<any> = [];
 		data.forEach((v, i) => {
-			let item = JSON.parse(JSON.stringify(v));
+			const item = JSON.parse(JSON.stringify(v));
 			const maxDose = +v.max_tolerated_dose || 1;
 			if (maxDose > 1) {
 				for (let index = 0; index < maxDose; index++) {
-					let newIitem = JSON.parse(JSON.stringify(item));
+					const newIitem = JSON.parse(JSON.stringify(item));
 					newIitem.dose_no = index + 1;
 					printItems.push(newIitem);
 				}
@@ -74,7 +75,7 @@ function createPdf(data: Array<any>, copy: number, createItem: CreateItem) {
 
 		printItems.forEach((value, index) => {
 			for (let copyIndex = 0; copyIndex < copy; copyIndex++) {
-				createItem(pdf.doc, value, (index === (printItems.length - 1) && copyIndex === (copy - 1) ? false : true));
+				createItem(pdf.doc, value, (index === (printItems.length - 1) && copyIndex === (copy - 1) ? false : true), showExpire);
 			}
 		});
 	}
@@ -83,7 +84,7 @@ function createPdf(data: Array<any>, copy: number, createItem: CreateItem) {
 	return [pdfContent, tempName];
 }
 
-function createItemTemplate(doc: jsPDF, data: any, addPage: boolean) {
+function createItemTemplate(doc: jsPDF, data: any, addPage: boolean, showExpire = true) {
 
 	const canvas = createCanvas(100, 100);
 	const pageWidth = doc.internal.pageSize.getWidth();
@@ -106,20 +107,39 @@ function createItemTemplate(doc: jsPDF, data: any, addPage: boolean) {
 	doc.setFont("SarabunNewBold", 'bold');
 	doc.text(data.vaccine_serial_no, 15, 14);
 
-	doc.setFont("SarabunNew", 'normal');
-	doc.text("Exp:", 5, 22);
-	doc.setFont("SarabunNewBold", 'bold');
-	doc.text(moment(data.expiration_date).format('YYYY-MM'), 15, 22);
+	if (showExpire) {
+		doc.setFont("SarabunNew", 'normal');
+		doc.text("Exp:", 5, 22);
+		doc.setFont("SarabunNewBold", 'bold');
+		doc.text(moment(data.expiration_date).format('YYYY-MM'), 15, 22);
+	} else {
+		doc.setFont("SarabunNew", 'normal');
+		doc.text("", 5, 22);
+		doc.setFont("SarabunNewBold", 'bold');
+		doc.text('', 15, 22);
+	}
 
-	doc.setFont("SarabunNew", 'normal');
-	doc.text("ขวดที่:", 33, 22);
-	doc.setFont("SarabunNewBold", 'bold');
-	doc.text(data.bottle_no || '1', 45, 22);
+	if (showExpire) {
+		doc.setFont("SarabunNew", 'normal');
+		doc.text("ขวดที่:", 33, 22);
+		doc.setFont("SarabunNewBold", 'bold');
+		doc.text(data.bottle_no || '1', 45, 22);
 
-	doc.setFont("SarabunNew", 'normal');
-	doc.text("โดสที่:", 53, 22);
-	doc.setFont("SarabunNewBold", 'bold');
-	doc.text(+data.max_tolerated_dose > 1 ? data.dose_no.toString() : '1', 64, 22);
+		doc.setFont("SarabunNew", 'normal');
+		doc.text("โดสที่:", 53, 22);
+		doc.setFont("SarabunNewBold", 'bold');
+		doc.text(+data.max_tolerated_dose > 1 ? data.dose_no.toString() : '1', 64, 22);
+	} else {
+		doc.setFont("SarabunNew", 'normal');
+		doc.text("ขวดที่:", 5, 22);
+		doc.setFont("SarabunNewBold", 'bold');
+		doc.text(data.bottle_no || '1', 20, 22);
+
+		doc.setFont("SarabunNew", 'normal');
+		doc.text("โดสที่:", 30, 22);
+		doc.setFont("SarabunNewBold", 'bold');
+		doc.text(+data.max_tolerated_dose > 1 ? data.dose_no.toString() : '1', 45, 22);
+	}
 
 	doc.setFontSize(20);
 	doc.setFont("SarabunNewBold", 'bold');

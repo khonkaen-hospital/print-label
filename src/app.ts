@@ -20,7 +20,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 			user: process.env.DB_USER,
 			password: process.env.DB_PASSWORD
 		},
-		debug: true,
+		debug: false,
 		acquireConnectionTimeout: 5000
 	});
 	next();
