@@ -10,6 +10,7 @@ WORKDIR /app
 COPY ./package.json ./
 
 RUN npm install canvas --build-from-source
+RUN npm install -g typescript@4.5.4 && npm i --save-dev @types/express @types/cors
 RUN npm install --prod
 
 COPY ./ ./
